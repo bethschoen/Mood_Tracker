@@ -1,6 +1,6 @@
 # optional and required fields 
 import streamlit as st
-from uuid import uuid4
+import uuid
 import json
 
 import sys
@@ -77,7 +77,7 @@ def data_entry():
         
     # update project dataset with new submission
     if submit:
-        entry_id = uuid4()
+        entry_id = str(uuid.uuid4())
         date_str = date.strftime("%Y-%m-%d")
         time_str = time.strftime("%H:%M:00")
         data = {
@@ -94,7 +94,7 @@ def data_entry():
         # update local file
         data_loc = os.path.join(vr.data_dir, vr.journal_blob_name)
         with open(data_loc, 'w') as f:
-            json.dump(data, f)
+            json.dump(st.session_state["journal_data"], f)
         # navigate to calendar view
         st.switch_page("pages/data_analysis.py")
 

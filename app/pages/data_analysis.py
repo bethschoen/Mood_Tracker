@@ -43,6 +43,7 @@ def create_calendar_event(event_id: str) -> list:
     """
 
     """
+    print(event_id)
     event_info = st.session_state["journal_data"][event_id]
     print(event_info)
 
