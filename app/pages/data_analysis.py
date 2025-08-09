@@ -5,28 +5,40 @@ import json
 import sys
 import os
 from datetime import datetime, timedelta
-from uuid import uuid4
-from ast import literal_eval
+import pathlib
 current_dir = os.path.dirname(__file__)
 sys.path.append(os.path.abspath(os.path.join(current_dir, '..', '..')))
 
 import variables as vr
 import utils as ut
 
+def load_css(file_path):
+    with open(file_path) as f:
+        st.html(f"<style>{f.read()}</style>")
+
 def initialise_session_state() -> None:
 
     if "mood_data" not in st.session_state:
         mood_df = pd.read_csv(os.path.join(vr.data_dir, vr.mood_data_filename))
         st.session_state["mood_data"] = mood_df
-    # all moods available for selection
-    if "all_tags" not in st.session_state:
-        all_tags = list(st.session_state["mood_data"]["Mood"].unique())
-        all_tags.sort()
-        st.session_state["all_tags"] = all_tags
-    # when the user makes a selection of tags for filtering moods
-    if "selected_tags" not in st.session_state:
+    
+    ## Assume nothing else is in the session state
+
+        # all moods available for selection
+        positive_sentiment_str = "Positive"
+        sorted_positive_tags = mood_df[mood_df[vr.sentiment_col_name] == positive_sentiment_str].sort_values(by=[vr.color_int_col_name, vr.mood_col_name], ascending=True)
+        positive_tags_list = list(sorted_positive_tags[vr.mood_col_name].unique())
+        st.session_state["positive_tags"] = positive_tags_list
+
+        negative_sentiment_str = "Negative"
+        sorted_negative_tags = mood_df[mood_df[vr.sentiment_col_name] == negative_sentiment_str].sort_values(by=[vr.color_int_col_name, vr.mood_col_name], ascending=True)
+        negative_tags_list = list(sorted_negative_tags[vr.mood_col_name].unique())
+        st.session_state["negative_tags"] = negative_tags_list
+
+        # when the user makes a selection of tags for filtering moods
         st.session_state['selected_tags'] = set()
-    if "journal_data" not in st.session_state:
+
+        # journal data
         data_loc = os.path.join(vr.data_dir, vr.journal_blob_name)
         with open(data_loc) as f:
             d = json.load(f)
@@ -35,7 +47,7 @@ def initialise_session_state() -> None:
 def access_mood_color(mood: str) -> str:        
 
     mood_df = st.session_state["mood_data"]
-    color = mood_df[mood_df.Mood == mood]["Color"].iloc[0]
+    color = mood_df[mood_df.Mood == mood][vr.color_col_name].iloc[0]
 
     return color
 
@@ -43,9 +55,7 @@ def create_calendar_event(event_id: str) -> list:
     """
 
     """
-    print(event_id)
     event_info = st.session_state["journal_data"][event_id]
-    print(event_info)
 
     mood_array = event_info["mood"]
     start_time = datetime.strptime(event_info["datetime"], "%Y-%m-%dT%H:%M:%S")
@@ -69,6 +79,8 @@ def create_calendar_event(event_id: str) -> list:
 
 def data_analysis():
 
+    css_path = pathlib.Path(vr.style_dir)
+    load_css(css_path)
     st.set_page_config(layout="wide")
     initialise_session_state()
 
@@ -82,7 +94,10 @@ def data_analysis():
 
         # Filtering buttons
         st.markdown("**Moods**")
-        st.session_state['selected_tags'] = ut.create_grid_of_buttons(st.session_state["all_tags"], st.session_state['selected_tags'])
+        st.markdown("Positive")
+        st.session_state['selected_tags'] = ut.create_grid_of_buttons(st.session_state["positive_tags"], st.session_state['selected_tags'])
+        st.markdown("Negative")
+        st.session_state['selected_tags'] = ut.create_grid_of_buttons(st.session_state["negative_tags"], st.session_state['selected_tags'])
 
     calendar_options = {
         "editable": True,
