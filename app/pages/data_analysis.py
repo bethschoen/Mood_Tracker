@@ -77,6 +77,10 @@ def create_calendar_event(event_id: str) -> list:
 
     return calendar_data
 
+def plot_anxiety(dates, scores):
+
+    return
+
 def data_analysis():
 
     css_path = pathlib.Path(vr.style_dir)
