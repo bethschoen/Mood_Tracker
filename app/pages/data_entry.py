@@ -60,6 +60,9 @@ def data_entry():
             value=1,
             format_func=stringify)
         
+        # COMMENTS
+        comments = st.text_area("Context and Comments", help="What situation are you in that is influencing your mood?")
+        
         # THOUGHTS
         thoughts = st.text_area("Thoughts", help="What's running through your mind?\nUse a new line to separate bullet points.")
 
@@ -67,10 +70,7 @@ def data_entry():
         feelings = st.text_area("Feelings", help="How are these thoughts and stimuli making you feel?\nUse a new line to separate bullet points.")
 
         # TRIGGERS
-        triggers = st.text_area("Triggers", help="What external stimulu are influencing your thoughts and feelings?\nUse a new line to separate bullet points.")
-
-        # COMMENTS
-        comments = st.text_area("Comments", help="Any other context/commentary you want to add")
+        triggers = st.text_area("Triggers", help="What external stimuli are influencing your thoughts and feelings?\nUse a new line to separate bullet points.")
 
         # with submit, create ID
         submit = st.form_submit_button(label = 'Save')

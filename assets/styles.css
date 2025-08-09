@@ -99,6 +99,11 @@
     color: #2F4F4F;
 }
 
+.st-key-Anxious button {
+    background-color: #FFFACD;
+    color: #2F4F4F;
+}
+
 .st-key-Careless button {
     background-color: #D0F0C0;
     color: #2F4F4F;
@@ -140,6 +145,11 @@
 }
 
 .st-key-Overwhelmed button {
+    background-color: #CCCCFF;
+    color: #2F4F4F;
+}
+
+.st-key-Panicky button {
     background-color: #CCCCFF;
     color: #2F4F4F;
 }
