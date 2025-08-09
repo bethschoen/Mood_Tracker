@@ -36,7 +36,7 @@ def data_entry():
 
         # MOOD(S)
         with cols[1]:
-            moods = st.multiselect("Mood", st.session_state["all_tags"])
+            moods = st.multiselect("Mood", st.session_state["positive_tags"] + st.session_state["negative_tags"])
 
         # ANXIETY
         slider_strings = [
