@@ -69,6 +69,8 @@ def journal():
         ''')
 
         st.markdown("## Filters")
+        # TODO: option for ordering diary
+        # option for search
 
     for event_id in st.session_state["journal_data"].keys():
         display_diary_entry(event_id)
