@@ -25,3 +25,29 @@ mood_colors = {
     "Blue":"#7C9ED9",
     "Purple":"#CCCCFF",
 }
+
+anxiety_strings = [
+    "1: Relaxed and calm",
+    "2: Slight tension",
+    "3: Noticeable but manageable",
+    "4: Midly distracted",
+    "5: Aware of myself and surroundings",
+    "6: Heightened alertness",
+    "7: Impaired concentration",
+    "8: Significant intrusive thoughts",
+    "9: Difficulty functioning in the moment",
+    "10: Urgent need to escape"
+]
+
+anxiety_colors = [
+    "#b3ebff",
+    "#94e2ff",
+    "#75daff",
+    "#38caff",
+    "#00a1db",
+    "#008abd",
+    "#005e80",
+    "#004761",
+    "#003142",
+    "#001b24"
+]

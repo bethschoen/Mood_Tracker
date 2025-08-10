@@ -39,20 +39,8 @@ def data_entry():
             moods = st.multiselect("Mood", st.session_state["positive_tags"] + st.session_state["negative_tags"])
 
         # ANXIETY
-        slider_strings = [
-            "1: Relaxed and calm",
-            "2: Slight tension",
-            "3: Noticeable but manageable",
-            "4: Midly distracted",
-            "5: Aware of myself and surroundings",
-            "6: Heightened alertness",
-            "7: Impaired concentration",
-            "8: Significant intrusive thoughts",
-            "9: Difficulty functioning in the moment",
-            "10: Urgent need to escape"
-        ]
         def stringify(i:int = 0) -> str:
-            return slider_strings[i-1]
+            return vr.anxiety_strings[i-1]
         
         anxiety = st.select_slider(
             "Anxiety", 
