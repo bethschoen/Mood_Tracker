@@ -77,8 +77,10 @@ def data_entry():
             "triggers":triggers,
             "comments":comments
         }
-        # save to session state
+        # save new data entry to session state
         st.session_state["journal_data"][entry_id] = data
+        # update recorded moods in session state
+        st.session_state["recorded_moods"] = list(set(st.session_state["recorded_moods"] + moods))
         # update local file
         data_loc = os.path.join(vr.data_dir, vr.journal_blob_name)
         with open(data_loc, 'w') as f:

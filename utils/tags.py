@@ -1,16 +1,33 @@
 import streamlit as st
 from typing import Union
 import numpy as np
+import os, sys
+current_dir = os.path.dirname(__file__)
+sys.path.append(os.path.abspath(os.path.join(current_dir, '..')))
 
-def display_tags(tags: list, tag_colours: dict):
+import variables as vr
+
+def access_mood_color(mood: str) -> str:       
+
+    #TODO: error handling
+    # - check mood data in session state
+    # - check mood in mood data
+
+    mood_df = st.session_state["mood_data"]
+    # get colour name
+    color_str = mood_df[mood_df[vr.mood_col_name] == mood][vr.color_col_name].iloc[0]
+    # get colour html
+    color = vr.mood_colors.get(color_str, "#e0e0e0")
+
+    return color
+
+def create_mood_tags(tags: list, display:bool=True):
     """
-    Given a list of tags, present them in the app using HTML
+    Given a list of moods, present them in the app using HTML
     Parameters
     ----------
     tags: list
         Tags to present
-    tag_colours: dict
-        Colours associated to the tag
 
     Returns
     -------
@@ -19,9 +36,11 @@ def display_tags(tags: list, tag_colours: dict):
     """
     tag_html = ""
     for tag in tags:
-        colour = tag_colours.get(tag, "#e0e0e0")  # Default color if tag not in dictionary
-        tag_html += f'<span style="background-color:{colour};color:#FFFFFF;border-radius:5px;padding:5px;margin:2px;display:inline-block;">{tag}</span>'
-    #st.markdown(tag_html, unsafe_allow_html=True)
+        color = access_mood_color(tag)
+        tag_html += f'<span style="background-color:{color};color:#2F4F4F;border-radius:5px;padding:5px;margin:2px;display:inline-block;">{tag}</span>'
+
+    if display:
+        st.markdown(tag_html, unsafe_allow_html=True)
 
     return tag_html
 

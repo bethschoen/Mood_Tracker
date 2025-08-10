@@ -24,6 +24,20 @@ def initialise_session_state() -> None:
     
     ## Assume nothing else is in the session state
 
+        # journal data
+        data_loc = os.path.join(vr.data_dir, vr.journal_blob_name)
+        with open(data_loc) as f:
+            d = json.load(f)
+        st.session_state["journal_data"] = d
+
+        # all moods that have previously been recorded
+        all_previously_recorded_moods = []
+        for data in d.values():
+            previously_recorded_moods = data["mood"]
+            all_previously_recorded_moods += previously_recorded_moods
+
+        st.session_state["recorded_moods"] = list(set(all_previously_recorded_moods))
+
         # all moods available for selection
         positive_sentiment_str = "Positive"
         sorted_positive_tags = mood_df[mood_df[vr.sentiment_col_name] == positive_sentiment_str].sort_values(by=[vr.color_int_col_name, vr.mood_col_name], ascending=True)
@@ -38,19 +52,6 @@ def initialise_session_state() -> None:
         # when the user makes a selection of tags for filtering moods
         st.session_state['selected_tags'] = set()
 
-        # journal data
-        data_loc = os.path.join(vr.data_dir, vr.journal_blob_name)
-        with open(data_loc) as f:
-            d = json.load(f)
-        st.session_state["journal_data"] = d
-
-def access_mood_color(mood: str) -> str:        
-
-    mood_df = st.session_state["mood_data"]
-    color = mood_df[mood_df.Mood == mood][vr.color_col_name].iloc[0]
-
-    return color
-
 def create_mood_calendar_event(event_id: str) -> list:
     """
     Return a list as mood is array
@@ -58,15 +59,14 @@ def create_mood_calendar_event(event_id: str) -> list:
     event_info = st.session_state["journal_data"][event_id]
 
     mood_array = event_info["mood"]
-    start_time = datetime.strptime(event_info["datetime"], "%Y-%m-%dT%H:%M:%S")
-    start_time_str = start_time.strftime("%Y-%m-%dT%H:%M:%S")
+    start_time_str = event_info["datetime"]
+    start_time = datetime.strptime(start_time_str, "%Y-%m-%dT%H:%M:%S")
     end_time = start_time + timedelta(minutes=10)
     end_time_str = end_time.strftime("%Y-%m-%dT%H:%M:%S")
 
     calendar_data = []
     for mood in mood_array:
-        color_str = access_mood_color(mood)
-        color = vr.mood_colors[color_str]
+        color = ut.access_mood_color(mood)
         calendar_event = {
             "title":mood,
             "color":color,
@@ -85,8 +85,8 @@ def create_anxiety_calendar_event(event_id: str) -> dict:
 
     anxiety_score = event_info["anxiety"]
     anxiety_str = vr.anxiety_strings[anxiety_score-1]
-    start_time = datetime.strptime(event_info["datetime"], "%Y-%m-%dT%H:%M:%S")
-    start_time_str = start_time.strftime("%Y-%m-%dT%H:%M:%S")
+    start_time_str = event_info["datetime"]
+    start_time = datetime.strptime(start_time_str, "%Y-%m-%dT%H:%M:%S")
     end_time = start_time + timedelta(minutes=10)
     end_time_str = end_time.strftime("%Y-%m-%dT%H:%M:%S")
 
@@ -111,33 +111,7 @@ def data_analysis():
     st.set_page_config(layout="wide")
     initialise_session_state()
 
-    with st.sidebar:
-        st.title("Data Analysis")
-        st.markdown('''
-        Explore the moods you've tracked to uncover trends, spot recurring feelings, and gain insights into how your emotions shift throughout your days and weeks.
-        ''')
-        if st.button("Clear selection", key="cs"):
-            st.session_state['selected_tags'] = set()
-
-        # Filtering buttons
-        st.markdown("**Moods**")
-        st.markdown("Positive")
-        st.session_state['selected_tags'] = ut.create_grid_of_buttons(st.session_state["positive_tags"], st.session_state['selected_tags'])
-        st.markdown("Negative")
-        st.session_state['selected_tags'] = ut.create_grid_of_buttons(st.session_state["negative_tags"], st.session_state['selected_tags'])
-
-    calendar_options = {
-        "editable": True,
-        "selectable": True,
-        "initialView": "daygrid",
-        "headerToolbar": {
-            "left": "today prev,next",
-            "center": "title",
-            "right": "dayGridDay,dayGridWeek,dayGridMonth",
-        },
-        "initialDate": datetime.now().strftime("%Y-%m-%d"),
-        "initialView": "dayGridMonth",
-    }
+    ## Data Setup ##
 
     # generate two calendars from journal data
     mood_calendar_events = []
@@ -153,6 +127,49 @@ def data_analysis():
     ## filter events by mood
     if st.session_state["selected_tags"]:
         mood_calendar_events = [i for i in mood_calendar_events if i["title"] in st.session_state["selected_tags"]]
+
+    calendar_choices = {
+        "Mood":mood_calendar_events,
+        "Anxiety":anxiety_calendar_events,
+    }
+
+    ## Page Setup ##
+
+    with st.sidebar:
+        st.title("Data Analysis")
+        st.markdown('''
+        Explore the moods you've tracked to uncover trends, spot recurring feelings, and gain insights into how your emotions shift throughout your days and weeks.
+        ''')
+
+        st.markdown("## Filters")
+        # Calendar selection
+        st.markdown("### Calendar")
+        chosen_calendar = st.selectbox(
+            "calendar select",
+            tuple(calendar_choices.keys()),
+            label_visibility="collapsed"
+        )
+
+        # Filtering buttons
+        if chosen_calendar == "Mood":
+            cols = st.columns([1.5, 1])
+            with cols[0]:
+                st.markdown("### Moods")
+            with cols[1]:
+                if st.button("Clear selection", key="cs"):
+                    st.session_state['selected_tags'] = set()
+
+            # positive
+            positive_button_options = [i for i in st.session_state["positive_tags"] if i in st.session_state["recorded_moods"]]
+            st.session_state['selected_tags'] = ut.create_grid_of_buttons(positive_button_options, st.session_state['selected_tags'])
+            # whitespace
+            st.container(height=3, border=False)
+            # negative
+            negative_button_options = [i for i in st.session_state["negative_tags"] if i in st.session_state["recorded_moods"]]
+            st.session_state['selected_tags'] = ut.create_grid_of_buttons(negative_button_options, st.session_state['selected_tags'])
+        else:
+            # if viewing anxiety calendar, reset mood buttons
+            st.session_state['selected_tags'] = set()
 
     custom_css="""
         .fc-event-past {
@@ -170,22 +187,22 @@ def data_analysis():
     """
 
     calendar_options = {
-        "Mood":mood_calendar_events,
-        "Anxiety":anxiety_calendar_events,
+        "editable": True,
+        "selectable": True,
+        "headerToolbar": {
+            "left": "today prev,next",
+            "center": "title",
+            "right": "dayGridDay,dayGridWeek,dayGridMonth",
+        },
+        "initialDate": datetime.now().strftime("%Y-%m-%d"),
+        "initialView": "dayGridMonth",
     }
 
-    chosen_calendar = st.selectbox(
-        "calendar select",
-        tuple(calendar_options.keys()),
-        label_visibility="collapsed"
-    )
-
     mood_calendar = calendar(
-        events=calendar_options[chosen_calendar],
+        events=calendar_choices[chosen_calendar],
         options=calendar_options,
         custom_css=custom_css,
         key='calendar', # Assign a widget key to prevent state loss
         )
-    st.write(mood_calendar)
 
 data_analysis()
