@@ -69,12 +69,47 @@ def journal():
         ''')
 
         st.markdown("## Filters")
-        # TODO: option for ordering diary
-        # option for search
+        # sort all events
+        ascending = "Oldest first"
+        descending = "Newest first"
+        ordering = st.selectbox(
+            "Sort by",
+            (descending, ascending),
+        )
 
-    for event_id in st.session_state["journal_data"].keys():
-        display_diary_entry(event_id)
         # whitespace
+        st.container(height=3, border=False)
+
+        # TODO: select by date
+        date_range = st.slider(
+            "Date filter",
+            min_value=datetime(2025, 1, 1),
+            max_value=datetime(2025, 12, 31),
+            value=(datetime(2025, 1, 1), datetime(2025, 12, 31)),
+            format="DD/MM/YY",
+        )
+        print(date_range)
+        
+        # TODO: key word search
+
+    # get ID and datetime of all events
+    all_events = []
+    for event_id, event_data in st.session_state["journal_data"].items():
+        all_events.append((event_id, event_data["datetime"]))
+
+    # sort all entries by datetime 
+    ordering_map = {
+        ascending: False,
+        descending: True,
+    }
+    reverse = ordering_map[ordering]
+    all_events.sort(key=lambda tup: tup[1], reverse=reverse) 
+    sorted_events = [x[0] for x in all_events]    
+
+    # display sorted, filtered events
+    for event_id in sorted_events:
+        display_diary_entry(event_id)
+        # whitespace between entries
         st.container(height=3, border=False)
 
 journal()
