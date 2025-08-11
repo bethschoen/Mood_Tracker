@@ -150,9 +150,12 @@ def data_analysis():
             label_visibility="collapsed"
         )
 
+        # whitespace
+        st.container(height=4, border=False)
+
         # Filtering buttons
         if chosen_calendar == "Mood":
-            cols = st.columns([1.5, 1])
+            cols = st.columns([1, 2])
             with cols[0]:
                 st.markdown("### Moods")
             with cols[1]:

@@ -8,16 +8,6 @@ sys.path.append(os.path.abspath(os.path.join(current_dir, '..', '..')))
 import variables as vr
 import utils as ut
 
-def show_slider_visual(value, min_val=0, max_val=100):
-    fig, ax = plt.subplots(figsize=(6, 1))
-    ax.plot([min_val, max_val], [0, 0], 'k-', lw=2)
-    ax.plot(value, 0, 'ro', markersize=10)
-    ax.set_xlim(min_val, max_val)
-    ax.axis('off')
-    ax.annotate(value, xy=(0, value))
-    ax.annotate(value, xy=(-10, value))
-    st.pyplot(fig)
-
 def display_diary_entry(event_id):
     # get event info
     event_info = st.session_state["journal_data"][event_id]
@@ -36,7 +26,8 @@ def display_diary_entry(event_id):
             "Anxiety", 
             options=vr.anxiety_strings, 
             value=vr.anxiety_strings[event_info["anxiety"]-1],
-            label_visibility="collapsed"
+            label_visibility="collapsed",
+            key=event_id+"anxiety_slider"
         )
     with anxiety_mood_cols[2]:
         ## mood cards
@@ -53,11 +44,15 @@ def display_diary_entry(event_id):
     for i, element in enumerate(["thoughts", "feelings", "triggers"]):
         with tft_cols[i]:
             st.markdown(f"### {element.capitalize()}")
-            element_text = event_info[element].split("\n")
-            element_bullet_points = ut.convert_list_to_bullet_points(element_text)
+            element_text = event_info[element]
+            # check text is not empty
+            if len(element_text) > 0:
+                element_text_list = element_text.split("\n")
+                element_bullet_points = ut.convert_list_to_bullet_points(element_text_list)
+            else:
+                element_bullet_points = ""
             element_container = st.container(border=None, height=300)
             element_container.markdown(element_bullet_points, unsafe_allow_html=True)
-    
 
 def journal():
 
@@ -78,7 +73,7 @@ def journal():
         )
 
         # whitespace
-        st.container(height=3, border=False)
+        st.container(height=4, border=False)
 
         # TODO: select by date
         date_range = st.slider(
@@ -110,6 +105,8 @@ def journal():
     for event_id in sorted_events:
         display_diary_entry(event_id)
         # whitespace between entries
-        st.container(height=3, border=False)
+        st.container(height=1, border=False)
+        st.divider() 
+        st.container(height=1, border=False)
 
 journal()
