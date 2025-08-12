@@ -9,8 +9,8 @@ import variables as vr
 # Page Navigation
 pages = [    
     st.Page("pages/data_analysis.py", title="Home", icon="📅", default=True),
-    st.Page("pages/data_entry.py", title="Journal Entry", icon="📝"),
     st.Page("pages/journal.py", title="Journal View", icon="📖"),
+    st.Page("pages/data_entry.py", title="New Journal Entry", icon="📝"),
     st.Page("pages/data_edit.py", title="Edit", icon="📝")
 ]
 
