@@ -101,9 +101,24 @@ def create_anxiety_calendar_event(event_id: str) -> dict:
 
     return calendar_event
 
-def plot_anxiety(dates, scores):
+def plot_anxiety():
 
-    return
+    # create dataset of dates and scores
+    df = pd.DataFrame(columns=["date", "anxiety"])
+    for journal_entry in st.session_state["journal_data"].values():
+        vals = [journal_entry["datetime"], journal_entry["anxiety"]]
+        df.loc[len(df)] = vals
+
+    # convert to datetime and sort
+    df["date"] = pd.to_datetime(df["date"])
+    df = df.sort_values(by="date")
+
+    # plot
+    plt.style.use('dark_background')
+    fig, ax = plt.subplots()
+    ax.plot(df["date"], df["anxiety"], color="#008abd")
+
+    return fig
 
 def plot_mood_pie():
 
@@ -115,16 +130,19 @@ def plot_mood_pie():
     # convert to df
     all_moods_df = pd.DataFrame(all_moods, columns=["mood"])
     # group by mood and count
-    mood_count = all_moods_df.groupby(["mood"]).value_counts().reset_index()
+    mood_count = all_moods_df.groupby(["mood"]).value_counts().reset_index().sort_values(by="count", ascending=False)
     
     # plot pie
+    plt.style.use('dark_background')
     fig, ax = plt.subplots()
-    # TODO: colours
-    # TODO: columns
-    ax.pie(mood_count["count"], labels = mood_count["mood"])
-    st.pyplot(fig)
+    wedge_colors = [ut.access_mood_color(mood) for mood in mood_count["mood"]]
+    ax.pie(
+        mood_count["count"], 
+        labels=mood_count["mood"],
+        colors=wedge_colors
+    )
 
-    return mood_count
+    return fig
         
 
 def data_analysis():
@@ -232,7 +250,14 @@ def data_analysis():
         )
 
     # plots
-    mood_count = plot_mood_pie()
-    print(mood_count)
+    plot_cols = st.columns([1.5, 1])
+    with plot_cols[0]:
+        line_fig = plot_anxiety()
+        st.pyplot(line_fig)
+    with plot_cols[1]:
+        pie_fig = plot_mood_pie()
+        st.pyplot(pie_fig)
+
+    print(plot_anxiety())
 
 data_analysis()
