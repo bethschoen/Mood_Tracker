@@ -14,6 +14,8 @@ def initialise_session_state() -> None:
         frequent_words = ut.analyse_word_frequency(st.session_state["journal_data"], vr.custom_stop_words)
         st.session_state["frequent_words"] = frequent_words
 
+        st.session_state["selected_frequent_words"] = set()
+
 def display_diary_entry(event_id):
     # get event info
     event_info = st.session_state["journal_data"][event_id]
@@ -100,8 +102,18 @@ def journal():
             format="DD/MM/YY HH:MM",
         )
         
+        # whitespace
+        st.container(height=4, border=False)
+        
         # TODO: key word search
-        print(st.session_state["frequent_words"])
+        cols = st.columns([1, 2])
+        with cols[0]:
+            st.markdown("Word search")
+        with cols[1]:
+            if st.button("Clear selection", key="cs"):
+                st.session_state['selected_frequent_words'] = set()
+        frequent_words = [i.capitalize() for i in st.session_state["frequent_words"]["word"]]
+        st.session_state['selected_frequent_words'] = ut.create_grid_of_buttons(frequent_words, st.session_state['selected_frequent_words'])        
 
     # get ID and datetime of all events
     all_events = []
