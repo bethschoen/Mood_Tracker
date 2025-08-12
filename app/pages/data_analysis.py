@@ -6,6 +6,7 @@ import sys
 import os
 from datetime import datetime, timedelta
 import pathlib
+from matplotlib import pyplot as plt
 current_dir = os.path.dirname(__file__)
 sys.path.append(os.path.abspath(os.path.join(current_dir, '..', '..')))
 
@@ -103,6 +104,28 @@ def create_anxiety_calendar_event(event_id: str) -> dict:
 def plot_anxiety(dates, scores):
 
     return
+
+def plot_mood_pie():
+
+    # get all occurrences of moods 
+    all_moods = []
+    for journal_entry in st.session_state["journal_data"].values():
+        all_moods += journal_entry["mood"]
+    all_moods = [[mood] for mood in all_moods]
+    # convert to df
+    all_moods_df = pd.DataFrame(all_moods, columns=["mood"])
+    # group by mood and count
+    mood_count = all_moods_df.groupby(["mood"]).value_counts().reset_index()
+    
+    # plot pie
+    fig, ax = plt.subplots()
+    # TODO: colours
+    # TODO: columns
+    ax.pie(mood_count["count"], labels = mood_count["mood"])
+    st.pyplot(fig)
+
+    return mood_count
+        
 
 def data_analysis():
 
@@ -207,5 +230,9 @@ def data_analysis():
         custom_css=custom_css,
         key='calendar', # Assign a widget key to prevent state loss
         )
+
+    # plots
+    mood_count = plot_mood_pie()
+    print(mood_count)
 
 data_analysis()
