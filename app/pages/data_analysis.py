@@ -2,11 +2,15 @@ import streamlit as st
 from streamlit_calendar import calendar
 import pandas as pd
 import json
-import sys
-import os
 from datetime import datetime, timedelta
 import pathlib
 from matplotlib import pyplot as plt
+from matplotlib import rcParams
+from pyfonts import load_google_font
+
+
+import sys
+import os
 current_dir = os.path.dirname(__file__)
 sys.path.append(os.path.abspath(os.path.join(current_dir, '..', '..')))
 
@@ -113,10 +117,23 @@ def plot_anxiety():
     df["date"] = pd.to_datetime(df["date"])
     df = df.sort_values(by="date")
 
-    # plot
+    # plot    
+    title_font = load_google_font("Source Sans Pro")
+    axis_font = load_google_font("Source Code Pro")
     plt.style.use('dark_background')
     fig, ax = plt.subplots()
-    ax.plot(df["date"], df["anxiety"], color="#008abd")
+    ax.plot(df["date"], df["anxiety"], color="#FF4B4B", marker='o', linestyle='dashed')
+    ax.set_title("Anxiety over Time", font=title_font)
+    ax.set_ylabel("Anxiety Score", font=axis_font)
+    ax.tick_params(axis='x', labelrotation=90)
+    
+    # Apply font to tick labels
+    for label in ax.get_xticklabels():
+        label.set_fontproperties(axis_font)
+
+    for label in ax.get_yticklabels():
+        label.set_fontproperties(axis_font)
+
 
     return fig
 
@@ -134,6 +151,9 @@ def plot_mood_pie():
     
     # plot pie
     plt.style.use('dark_background')
+    # plot    
+    title_font = load_google_font("Source Sans Pro")
+    axis_font = load_google_font("Source Code Pro")
     fig, ax = plt.subplots()
     wedge_colors = [ut.access_mood_color(mood) for mood in mood_count["mood"]]
     ax.pie(
@@ -141,6 +161,7 @@ def plot_mood_pie():
         labels=mood_count["mood"],
         colors=wedge_colors
     )
+    ax.set_title("Mood Frequency", font=title_font)
 
     return fig
         
@@ -254,10 +275,11 @@ def data_analysis():
     with plot_cols[0]:
         line_fig = plot_anxiety()
         st.pyplot(line_fig)
+
     with plot_cols[1]:
         pie_fig = plot_mood_pie()
         st.pyplot(pie_fig)
 
-    print(plot_anxiety())
+    #print(plot_anxiety())
 
 data_analysis()
