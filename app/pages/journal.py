@@ -19,7 +19,7 @@ def display_diary_entry(event_id):
     event_info = st.session_state["journal_data"][event_id]
 
     # datetime title
-    event_datetime = datetime.strptime(event_info["datetime"], "%Y-%m-%dT%H:%M:%S")
+    event_datetime = datetime.strptime(event_info["datetime"], vr.datetime_str_format)
     event_datetime_str = event_datetime.strftime("%d %B %Y %H:%M")
     st.markdown(f"# {event_datetime_str}")
     
@@ -63,7 +63,7 @@ def display_diary_entry(event_id):
 def get_min_and_max_datetimes_recorded():
 
     journal_entries = st.session_state["journal_data"].values()
-    datetimes = [datetime.strptime(i["datetime"], "%Y-%m-%dT%H:%M:%S") for i in journal_entries]
+    datetimes = [datetime.strptime(i["datetime"], vr.datetime_str_format) for i in journal_entries]
     oldest_date = min(datetimes).replace(hour=0, minute=0)
     newest_date = max(datetimes).replace(hour=23, minute=59)
 
@@ -107,7 +107,7 @@ def journal():
     all_events = []
     for event_id, event_data in st.session_state["journal_data"].items():
         # convert recorded datetime to a datetime object
-        datetime_obj = datetime.strptime(event_data["datetime"], "%Y-%m-%dT%H:%M:%S")
+        datetime_obj = datetime.strptime(event_data["datetime"], vr.datetime_str_format)
         # check event falls within the selected date range
         if datetime_obj >= date_range[0] and datetime_obj <= date_range[1]:
             all_events.append((event_id, event_data["datetime"]))
@@ -124,6 +124,21 @@ def journal():
     # display sorted, filtered events
     for event_id in sorted_events:
         display_diary_entry(event_id)
+        # buttons
+        button_cols = st.columns([1, 1, 5])
+        with button_cols[0]:
+            # edit button
+            if st.button("Edit", key=event_id+"_edit", use_container_width=True):
+                # navigate 
+                st.session_state["entry_to_edit"] = event_id
+                st.switch_page("pages/data_edit.py")
+        with button_cols[1]:
+            # delete button
+            if st.button("Delete", key=event_id+"_delete", use_container_width=True):
+                # navigate 
+                del st.session_state["journal_data"][event_id]
+                ut.save_json_data_locally()
+                st.switch_page("pages/journal.py")
         # whitespace between entries
         st.container(height=1, border=False)
         st.divider() 

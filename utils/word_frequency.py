@@ -14,7 +14,7 @@ def combine_and_clean_one_journal_entry(journal_entry: dict, custom_stop_words: 
     Combine all text entries within a single journal entry and clean them
     """
 
-    text_data = [journal_entry[text_field] for text_field in vr.text_fields]
+    text_data = [journal_entry[text_field] for text_field in vr.text_fields if text_field is not None]
     combined_text_data = "\n".join(text_data)
         
     # remove capital letters

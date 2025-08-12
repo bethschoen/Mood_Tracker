@@ -52,6 +52,8 @@ anxiety_colors = [
     "#001b24"
 ]
 
+datetime_str_format = "%Y-%m-%dT%H:%M:%S"
+
 # word_frequency.py
 custom_stop_words = ["feel"]
 text_fields = ["comments", "triggers", "feelings", "thoughts"]
