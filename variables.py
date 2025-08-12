@@ -51,3 +51,9 @@ anxiety_colors = [
     "#003142",
     "#001b24"
 ]
+
+# word_frequency.py
+custom_stop_words = ["feel"]
+text_fields = ["comments", "triggers", "feelings", "thoughts"]
+word_col_name = "word"
+word_count_col_name = "word_count"
