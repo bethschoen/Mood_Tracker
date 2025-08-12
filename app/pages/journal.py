@@ -8,6 +8,12 @@ sys.path.append(os.path.abspath(os.path.join(current_dir, '..', '..')))
 import variables as vr
 import utils as ut
 
+def initialise_session_state() -> None:
+
+    if "frequent_words" not in st.session_state:
+        frequent_words = ut.analyse_word_frequency(st.session_state["journal_data"], vr.custom_stop_words)
+        st.session_state["frequent_words"] = frequent_words
+
 def display_diary_entry(event_id):
     # get event info
     event_info = st.session_state["journal_data"][event_id]
@@ -54,9 +60,19 @@ def display_diary_entry(event_id):
             element_container = st.container(border=None, height=300)
             element_container.markdown(element_bullet_points, unsafe_allow_html=True)
 
+def get_min_and_max_datetimes_recorded():
+
+    journal_entries = st.session_state["journal_data"].values()
+    datetimes = [datetime.strptime(i["datetime"], "%Y-%m-%dT%H:%M:%S") for i in journal_entries]
+    oldest_date = min(datetimes).replace(hour=0, minute=0)
+    newest_date = max(datetimes).replace(hour=23, minute=59)
+
+    return (oldest_date, newest_date)
+
 def journal():
 
     st.set_page_config(layout="wide")
+    initialise_session_state()
     with st.sidebar:
         st.title("Journal")
         st.markdown('''
@@ -75,22 +91,26 @@ def journal():
         # whitespace
         st.container(height=4, border=False)
 
-        # TODO: select by date
+        min_date, max_date = get_min_and_max_datetimes_recorded()
         date_range = st.slider(
             "Date filter",
-            min_value=datetime(2025, 1, 1),
-            max_value=datetime(2025, 12, 31),
-            value=(datetime(2025, 1, 1), datetime(2025, 12, 31)),
-            format="DD/MM/YY",
+            min_value=min_date,
+            max_value=max_date,
+            value=(min_date, max_date),
+            format="DD/MM/YY HH:MM",
         )
-        print(date_range)
         
         # TODO: key word search
+        print(st.session_state["frequent_words"])
 
     # get ID and datetime of all events
     all_events = []
     for event_id, event_data in st.session_state["journal_data"].items():
-        all_events.append((event_id, event_data["datetime"]))
+        # convert recorded datetime to a datetime object
+        datetime_obj = datetime.strptime(event_data["datetime"], "%Y-%m-%dT%H:%M:%S")
+        # check event falls within the selected date range
+        if datetime_obj >= date_range[0] and datetime_obj <= date_range[1]:
+            all_events.append((event_id, event_data["datetime"]))
 
     # sort all entries by datetime 
     ordering_map = {
