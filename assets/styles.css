@@ -1,155 +1,150 @@
 
 .st-key-Assertive button {
-    background-color: #F08080;
+    background-color: #FF6F61;
     color: #2F4F4F;
 }
 
 .st-key-Confident button {
-    background-color: #F08080;
+    background-color: #FF6F61;
     color: #2F4F4F;
 }
 
 .st-key-Excited button {
-    background-color: #F08080;
+    background-color: #FF6F61;
     color: #2F4F4F;
 }
 
 .st-key-Enthusiastic button {
-    background-color: #FBCEB1;
+    background-color: #FFA07A;
     color: #2F4F4F;
 }
 
 .st-key-Cheerful button {
-    background-color: #FFFACD;
+    background-color: #FFFF99;
     color: #2F4F4F;
 }
 
 .st-key-Energetic button {
-    background-color: #FFFACD;
+    background-color: #FFFF99;
     color: #2F4F4F;
 }
 
 .st-key-Optimistic button {
-    background-color: #FFFACD;
+    background-color: #FFFF99;
     color: #2F4F4F;
 }
 
 .st-key-Determined button {
-    background-color: #D0F0C0;
+    background-color: #98FB98;
     color: #2F4F4F;
 }
 
 .st-key-Productive button {
-    background-color: #D0F0C0;
+    background-color: #98FB98;
     color: #2F4F4F;
 }
 
 .st-key-Calm button {
-    background-color: #7C9ED9;
+    background-color: #ADD8E6;
     color: #2F4F4F;
 }
 
 .st-key-Peaceful button {
-    background-color: #7C9ED9;
+    background-color: #ADD8E6;
     color: #2F4F4F;
 }
 
 .st-key-Trusting button {
-    background-color: #CCCCFF;
+    background-color: #E6E6FA;
     color: #2F4F4F;
 }
 
 .st-key-Agitated button {
-    background-color: #F08080;
-    color: #2F4F4F;
+    background-color: #B22222;
+    color: #f7f7f7;
 }
 
 .st-key-Frustrated button {
-    background-color: #F08080;
-    color: #2F4F4F;
+    background-color: #B22222;
+    color: #f7f7f7;
 }
 
 .st-key-Masking button {
-    background-color: #FBCEB1;
-    color: #2F4F4F;
+    background-color: #D2691E;
+    color: #f7f7f7;
 }
 
 .st-key-Self-Loathing button {
-    background-color: #FBCEB1;
-    color: #2F4F4F;
+    background-color: #D2691E;
+    color: #f7f7f7;
 }
 
 .st-key-Happy button {
-    background-color: #FFFACD;
+    background-color: #FFFF99;
     color: #2F4F4F;
 }
 
 .st-key-Impulsive button {
-    background-color: #FFFACD;
+    background-color: #FFD700;
     color: #2F4F4F;
 }
 
 .st-key-Nervous button {
-    background-color: #FFFACD;
+    background-color: #FFD700;
     color: #2F4F4F;
 }
 
 .st-key-Restless button {
-    background-color: #FFFACD;
+    background-color: #FFD700;
     color: #2F4F4F;
 }
 
 .st-key-Anxious button {
-    background-color: #FFFACD;
+    background-color: #FFD700;
     color: #2F4F4F;
 }
 
 .st-key-Careless button {
-    background-color: #D0F0C0;
-    color: #2F4F4F;
+    background-color: #556B2F;
+    color: #f7f7f7;
 }
 
 .st-key-Envious button {
-    background-color: #D0F0C0;
-    color: #2F4F4F;
+    background-color: #556B2F;
+    color: #f7f7f7;
 }
 
 .st-key-Stubborn button {
-    background-color: #D0F0C0;
-    color: #2F4F4F;
+    background-color: #556B2F;
+    color: #f7f7f7;
 }
 
 .st-key-Introverted button {
-    background-color: #7C9ED9;
-    color: #2F4F4F;
+    background-color: #4682B4;
+    color: #f7f7f7;
 }
 
 .st-key-Lethargic button {
-    background-color: #7C9ED9;
-    color: #2F4F4F;
+    background-color: #4682B4;
+    color: #f7f7f7;
 }
 
 .st-key-Lonely button {
-    background-color: #7C9ED9;
-    color: #2F4F4F;
+    background-color: #4682B4;
+    color: #f7f7f7;
 }
 
 .st-key-Sad button {
-    background-color: #7C9ED9;
-    color: #2F4F4F;
+    background-color: #4682B4;
+    color: #f7f7f7;
 }
 
 .st-key-Indecisive button {
-    background-color: #CCCCFF;
-    color: #2F4F4F;
+    background-color: #800080;
+    color: #f7f7f7;
 }
 
 .st-key-Overwhelmed button {
-    background-color: #CCCCFF;
-    color: #2F4F4F;
-}
-
-.st-key-Panicky button {
-    background-color: #CCCCFF;
-    color: #2F4F4F;
+    background-color: #800080;
+    color: #f7f7f7;
 }

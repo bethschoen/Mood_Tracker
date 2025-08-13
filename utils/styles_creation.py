@@ -25,16 +25,18 @@ def create_styles_file():
     mood_df = pd.read_csv(mood_data_path)
 
     # join to colours in variables
-    color_html_col_name = "color_html"
-    mood_df[color_html_col_name] = mood_df.apply(lambda row: vr.mood_colors.get(row[vr.color_col_name], "#FFFFFF"), axis=1)
-    mood_dict = dict(zip(mood_df[vr.mood_col_name], mood_df[color_html_col_name]))
+    background_color_html_col_name = "background_color_html"
+    text_color_html_col_name = "text_color_html"
+    mood_df[background_color_html_col_name] = mood_df.apply(lambda row: vr.mood_colors_v2.get(row[vr.sentiment_col_name], {}).get(row[vr.color_col_name], {}).get("background", "#e0e0e0"), axis=1)
+    mood_df[text_color_html_col_name] = mood_df.apply(lambda row: vr.mood_colors_v2.get(row[vr.sentiment_col_name], {}).get(row[vr.color_col_name], {}).get("text", "#e0e0e0"), axis=1)
+    mood_dict = mood_df[[vr.mood_col_name, background_color_html_col_name, text_color_html_col_name]].set_index(vr.mood_col_name).to_dict(orient="index")
 
     # create css entry for mood and colour
     for mood, color in mood_dict.items():
         css_string = f"""
 .st-key-{mood} button {{
-    background-color: {color};
-    color: #2F4F4F;
+    background-color: {color[background_color_html_col_name]};
+    color: {color[text_color_html_col_name]};
 }}
 """
         # write to file

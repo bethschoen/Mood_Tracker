@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(current_dir, '..')))
 
 import variables as vr
 
-def access_mood_color(mood: str) -> str:       
+def access_mood_color_v1(mood: str) -> str:       
 
     #TODO: error handling
     # - check mood data in session state
@@ -17,9 +17,27 @@ def access_mood_color(mood: str) -> str:
     # get colour name
     color_str = mood_df[mood_df[vr.mood_col_name] == mood][vr.color_col_name].iloc[0]
     # get colour html
-    color = vr.mood_colors.get(color_str, "#e0e0e0")
+    color = vr.mood_colors_v1.get(color_str, "#e0e0e0")
 
     return color
+
+def access_mood_color(mood: str) -> str:       
+
+    #TODO: error handling
+    # - check mood data in session state
+    # - check mood in mood data
+
+    mood_df = st.session_state["mood_data"]
+    # get colour name
+    color_str = mood_df[mood_df[vr.mood_col_name] == mood][vr.color_col_name].iloc[0]
+    # get sentiment
+    sentiment = mood_df[mood_df[vr.mood_col_name] == mood][vr.sentiment_col_name].iloc[0]
+    # get colour html
+    color_info = vr.mood_colors_v2.get(sentiment, {}).get(color_str, {})
+    background_color = color_info.get("background", "#e0e0e0")
+    text_color = color_info.get("text", "#2F4F4F")
+
+    return (background_color, text_color)
 
 def create_mood_tags(tags: list, display:bool=True):
     """
@@ -36,8 +54,8 @@ def create_mood_tags(tags: list, display:bool=True):
     """
     tag_html = ""
     for tag in tags:
-        color = access_mood_color(tag)
-        tag_html += f'<span style="background-color:{color};color:#2F4F4F;border-radius:5px;padding:5px;margin:2px;display:inline-block;">{tag}</span>'
+        background_color, text_color = access_mood_color(tag)
+        tag_html += f'<span style="background-color:{background_color};color:{text_color};border-radius:5px;padding:5px;margin:2px;display:inline-block;">{tag}</span>'
 
     if display:
         st.markdown(tag_html, unsafe_allow_html=True)

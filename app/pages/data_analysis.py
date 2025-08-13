@@ -71,10 +71,10 @@ def create_mood_calendar_event(event_id: str) -> list:
 
     calendar_data = []
     for mood in mood_array:
-        color = ut.access_mood_color(mood)
+        background_color, text_color = ut.access_mood_color(mood)
         calendar_event = {
             "title":mood,
-            "color":color,
+            "color":background_color,
             "start":start_time_str,
             "end":end_time_str
         }
@@ -123,9 +123,13 @@ def plot_anxiety():
     plt.style.use('dark_background')
     fig, ax = plt.subplots()
     ax.plot(df["date"], df["anxiety"], color="#FF4B4B", marker='o', linestyle='dashed')
-    ax.set_title("Anxiety over Time", font=title_font)
+    ax.set_title("Anxiety over Time", font=title_font, fontsize=12)
     ax.set_ylabel("Anxiety Score", font=axis_font)
     ax.tick_params(axis='x', labelrotation=90)
+    # Make figure background transparent
+    ax.set_facecolor('none')      
+    fig.patch.set_alpha(0.0)
+
     
     # Apply font to tick labels
     for label in ax.get_xticklabels():
@@ -155,13 +159,17 @@ def plot_mood_pie():
     title_font = load_google_font("Source Sans Pro")
     axis_font = load_google_font("Source Code Pro")
     fig, ax = plt.subplots()
-    wedge_colors = [ut.access_mood_color(mood) for mood in mood_count["mood"]]
+    wedge_colors = [ut.access_mood_color(mood)[0] for mood in mood_count["mood"]]
     ax.pie(
         mood_count["count"], 
         labels=mood_count["mood"],
-        colors=wedge_colors
+        colors=wedge_colors,        
+        textprops={'fontproperties': axis_font}  
     )
-    ax.set_title("Mood Frequency", font=title_font)
+    ax.set_title("Mood Frequency", font=title_font, fontsize=12)
+    # Make figure background transparent
+    ax.set_facecolor('none')      
+    fig.patch.set_alpha(0.0)
 
     return fig
         
@@ -191,8 +199,8 @@ def data_analysis():
         mood_calendar_events = [i for i in mood_calendar_events if i["title"] in st.session_state["selected_tags"]]
 
     calendar_choices = {
-        "Mood":mood_calendar_events,
-        "Anxiety":anxiety_calendar_events,
+        vr.mood_calendar_key:mood_calendar_events,
+        vr.anxiety_calendar_key:anxiety_calendar_events,
     }
 
     ## Page Setup ##
@@ -216,7 +224,7 @@ def data_analysis():
         st.container(height=4, border=False)
 
         # Filtering buttons
-        if chosen_calendar == "Mood":
+        if chosen_calendar == vr.mood_calendar_key:
             cols = st.columns([1, 2])
             with cols[0]:
                 st.markdown("### Moods")
@@ -235,6 +243,17 @@ def data_analysis():
         else:
             # if viewing anxiety calendar, reset mood buttons
             st.session_state['selected_tags'] = set()
+
+        # Anxiety scale
+        if chosen_calendar == vr.anxiety_calendar_key:
+            st.markdown("Key")
+            for i, (level, color) in enumerate(zip(vr.anxiety_strings, vr.anxiety_colors), start=1):
+                if i < 5:
+                    text_colour = "#2F4F4F"
+                else:
+                    text_colour = "#D3D4D5" 
+                anxiety_level_html = f'<span style="background-color:{color};color:{text_colour};border-radius:5px;padding:5px;margin:2px;display:block">{level}</span>'
+                st.markdown(anxiety_level_html, unsafe_allow_html=True)
 
     custom_css="""
         .fc-event-past {
@@ -274,11 +293,15 @@ def data_analysis():
     plot_cols = st.columns([1.5, 1])
     with plot_cols[0]:
         line_fig = plot_anxiety()
-        st.pyplot(line_fig)
+        line_fig.set_size_inches(6, 4)  
+        with st.container():
+            st.pyplot(line_fig)
 
     with plot_cols[1]:
         pie_fig = plot_mood_pie()
-        st.pyplot(pie_fig)
+        pie_fig.set_size_inches(6, 4) 
+        with st.container():
+            st.pyplot(pie_fig)
 
     #print(plot_anxiety())
 
