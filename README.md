@@ -96,4 +96,4 @@ A new entry can be created by clicking "New Entry".
 [home-page]: assets/250813_home.png
 [anxiety-calendar]: assets/250813_second_diary.png
 [journal]: assets/250813_journal_view.png
-[new-entry]: assets/250823_new-entry.png
+[new-entry]: assets/250823_new_entry.png
