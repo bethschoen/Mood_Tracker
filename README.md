@@ -2,7 +2,7 @@
 
 ## About the Project
 
-Virtual mental health journal powered by Streamlit
+This app has been created to track a user's mental health. Explore the moods you've tracked to uncover trends, spot recurring feelings, and gain insights into how your emotions shift throughout your days and weeks.
 
 ### Built With
 
@@ -41,6 +41,8 @@ Here's how you can get the app running on your machine.
 
 ### Project Repo
 
+The following describes the repo structure, detailing where you can find specific files. 
+
 ```
 Mood_Tracker
 |
@@ -71,8 +73,27 @@ Mood_Tracker
 
 ## Usage
 
+The Home page provides a calendar view of moods over the current month. This can be filtered using the mood buttons in the side bar.
+
+![Home page][home-page]
+
+Alternatively, the calendar can be switched to display anxiety level using the dropdown. 
+
+![Anxiety calendar][anxiety-calendar]
+
+Previous journal entries can be accessed via the "Journal View" navigation button in the sidebar. This will display all recorded information. There are buttons underneath each entry, allowing you to edit or delete them. 
+
+![Journal][journal]
+
+A new entry can be created by clicking "New Entry".
+
+![New entry][new-entry]
 
 [streamlit]: https://img.shields.io/badge/-Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white
 [streamlit-url]: https://streamlit.io/
 [anaconda]: https://img.shields.io/badge/Anaconda-44A833?logo=Anaconda&logoColor=white
 [anaconda-url]: https://anaconda.org/anaconda/python
+[home-page]: assets/250813_home.png
+[anxiety-calendar]: assets/250813_second_diary.png
+[journal]: assets/250813_journal_view.png
+[new-entry]: assets/250823_new-entry.png
